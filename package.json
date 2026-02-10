@@ -1,0 +1,23 @@
+{
+  "name": "gold-price-monitor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "@langchain/community": "^1.1.10",
+    "@langchain/core": "^1.1.18",
+    "cheerio": "^1.2.0",
+    "dotenv": "^17.2.3",
+    "kafkajs": "^2.2.4",
+    "node-cron": "^4.2.1",
+    "sqlite3": "^5.1.7",
+    "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
