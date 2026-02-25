@@ -33,10 +33,10 @@ class Event {
                 await db.runAsync('DELETE FROM events WHERE id = ?', [this.id]);
                 logger.info(`EVENT DELETED FROM DB: ${this.type}`);
             } catch (err) {
-                logger.error(`ERROR DELETING EVENT FROM DB: ${err?.message}`);
+                logger.error(`ERROR DELETING EVENT FROM DB:`, err);
             }
 
-            logger.error(`ERROR GENERATING EVENT: ${error?.message}`);
+            logger.error(`ERROR GENERATING EVENT:`, error);
             return null;
         }
     }
