@@ -1,5 +1,5 @@
 import { randomUUID } from "crypto";
-import { logger, producer } from "../config/index.js";
+import { db, logger, producer } from "../config/index.js";
 
 class Event {
     constructor(type, payload) {
@@ -10,6 +10,9 @@ class Event {
 
     async generate() {
         try {
+            await db.runAsync('INSERT INTO events (id, type, payload) VALUES (?, ?, ?)', [this.id, this.type, JSON.stringify(this.payload)]);
+            logger.info(`EVENT INSERTED INTO DB: ${this.type}`);
+
             await producer.connect();
             await producer.send({
                 topic: `${this.type}-events`,
@@ -23,9 +26,17 @@ class Event {
             })
             await producer.disconnect();
             logger.info(`EVENT GENERATED: ${this.type}`);
+
             return this.id;
         } catch (error) {
-            logger.error('ERROR GENERATING EVENT:', error);
+            try {
+                await db.runAsync('DELETE FROM events WHERE id = ?', [this.id]);
+                logger.info(`EVENT DELETED FROM DB: ${this.type}`);
+            } catch (err) {
+                logger.error(`ERROR DELETING EVENT FROM DB: ${err?.message}`);
+            }
+
+            logger.error(`ERROR GENERATING EVENT: ${error?.message}`);
             return null;
         }
     }

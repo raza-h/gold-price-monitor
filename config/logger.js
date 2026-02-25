@@ -3,6 +3,7 @@ import winston from 'winston';
 export default winston.createLogger({
     level: 'info',
     format: winston.format.combine(
+        winston.format.errors({ stack: true }),
         winston.format.timestamp(),
         winston.format.json()
     ),
