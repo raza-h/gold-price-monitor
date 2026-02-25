@@ -77,8 +77,9 @@ yarn dev   # or npm run dev
 │   └── scrapers.js    # Web scraping functions for different websites
 ├── entities/
 │   ├── RecordedPrice.js         # Implementation for state for previously recorded gold price
-│   └── WhatsappGoldRateJob.js   # Implementation for sending WhatsApp messages via Twilio
+│   ├── ScrapeGoldPriceJob.js    # Implementation for scraping gold prices and generating events
 │   └── Event.js                 # Implementation for Event creation and generation to Kafka broker / cluster
+├── utils.js              # Shared utility functions (e.g. wrapError for structured error logging)
 ├── .env.example       # Example environment variables
 ├── .gitignore
 ├── Dockerfile

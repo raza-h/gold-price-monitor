@@ -1,6 +1,7 @@
 import RecordedPrice from './RecordedPrice.js';
 import { logger } from '../config/index.js';
 import { THRESHOLD } from '../constants.js';
+import { wrapError } from '../utils.js';
 import Event from './Event.js';
 
 class ScrapeGoldPriceJob {
@@ -43,7 +44,7 @@ class ScrapeGoldPriceJob {
                 logger.info("SUCCESS COMPLETING JOB, NO EVENT GENERATED!");
             }
         } catch (err) {
-            logger.error('ERROR SENDING NOTIFICATION:', err);
+            logger.error(wrapError('ERROR SENDING NOTIFICATION:', err));
         }
 
     }

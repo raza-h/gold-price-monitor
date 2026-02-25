@@ -1,5 +1,6 @@
 import cron from 'node-cron';
 import { logger } from './config/index.js';
+import { wrapError } from './utils.js';
 import { config } from 'dotenv';
 import { CRON_OPTIONS, CRON_EXPRESSIONS } from './constants.js';
 import { goldPkScrapeGoldPriceJob } from './services/jobs.js';
@@ -13,5 +14,5 @@ try {
 
     logger.info("SUCCESS SCHEDULING JOBS!");
 } catch (err) {
-    logger.error("ERROR SCHEDULING JOBS:", err);
+    logger.error(wrapError("ERROR SCHEDULING JOBS:", err));
 }

@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import { db, logger, producer } from "../config/index.js";
+import { wrapError } from "../utils.js";
 
 class Event {
     constructor(type, payload) {
@@ -33,10 +34,10 @@ class Event {
                 await db.runAsync('DELETE FROM events WHERE id = ?', [this.id]);
                 logger.info(`EVENT DELETED FROM DB: ${this.type}`);
             } catch (err) {
-                logger.error(`ERROR DELETING EVENT FROM DB:`, err);
+                logger.error(wrapError('ERROR DELETING EVENT FROM DB:', err));
             }
 
-            logger.error(`ERROR GENERATING EVENT:`, error);
+            logger.error(wrapError('ERROR GENERATING EVENT:', error));
             return null;
         }
     }

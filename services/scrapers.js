@@ -1,4 +1,5 @@
 import { logger } from "../config/index.js";
+import { wrapError } from "../utils.js";
 import { CheerioWebBaseLoader as WebBaseLoader } from "@langchain/community/document_loaders/web/cheerio"
 
 export const aryScrapeGoldRate = async () => {
@@ -18,7 +19,7 @@ export const aryScrapeGoldRate = async () => {
 
         return { rate: formattedGoldRates?.[0]?.rate, weight: formattedGoldRates?.[0]?.weight };
     } catch (err) {
-        logger.error('ERROR SCRAPING from Ary News:', err);
+        logger.error(wrapError('ERROR SCRAPING from Ary News:', err));
     }
 };
 
@@ -43,6 +44,6 @@ export const goldPkScrapeGoldRate = async () => {
 
         return { rate: formattedGoldRates?.[0]?.rate, weight: formattedGoldRates?.[0]?.weight };
     } catch (err) {
-        logger.error('ERROR SCRAPING FROM gold.pk:', err);
+        logger.error(wrapError('ERROR SCRAPING FROM gold.pk:', err));
     }
 }
