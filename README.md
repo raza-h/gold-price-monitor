@@ -111,17 +111,14 @@ Schedules based on priority:
 
 
 ```javascript
-// Every 5 minutes from 6-10 PM on weekdays
-*/5 18-21 * * 1-5
+// Every 5 minutes from 6-10 PM on business days
+*/5 18-21 * * 1-6
 
 // Every 15 minutes from 1-6 PM and 10 PM - 3 AM
-*/15 13-17,22-23,0-3 * * 1-5
+*/15 13-17,22-23,0-3 * * 1-6
 
 // Every hour from 4 AM - 12 PM
-0 4-12 * * 1-5
-
-// Every 15 minutes from 12-3 AM on Saturday (last 3 hours before market closes on the weekend)
-*/15 0-3 * * 6
+0 4-12 * * 1-6
 ```
 
 ## Troubleshooting
