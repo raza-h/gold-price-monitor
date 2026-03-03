@@ -1,4 +1,4 @@
-# Gold Price Scraper & Kafka Producer ⛏️📈
+# AurumPulse: Gold Price Scraper & Kafka Producer ⛏️📈
 
 A lightweight Node.js cron job that scrapes gold prices periodically, stores changes in a SQLite database, and produces Kafka events when price thresholds are crossed. Perfect for automated monitoring and real-time alerting systems.
 
