@@ -59,7 +59,7 @@ yarn dev   # or npm run dev
     cd data
     touch db.sqlite
     ```
-    Finally, navigate to config/sqlite.js and update `dbFolder` from `/data` to `./data`.
+    Finally, navigate to config/db.js and update `dbFolder` from `/data` to `./data`.
 
 ## Project Structure
 
@@ -126,7 +126,7 @@ Schedules based on priority:
 ### Common Issues
 
 **Database setup:**
-- Navigate to config/sqlite.js and update `dbFolder` from `/data` to `./data` for local development and testing
+- Navigate to config/db.js and update `dbFolder` from `/data` to `./data` for local development and testing
 
 ## Contributing
 
