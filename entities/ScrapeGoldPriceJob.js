@@ -1,13 +1,15 @@
 import RecordedPrice from './RecordedPrice.js';
+import WhatsappJob from './WhatsappJob.js';
 import { logger } from '../config/index.js';
 import { THRESHOLD } from '../constants.js';
 import { wrapError } from '../utils.js';
 import Event from './Event.js';
 
 class ScrapeGoldPriceJob {
-    constructor(scraper = async () => { }, recordedPrice = new RecordedPrice()) {
+    constructor(scraper = async () => { }, recordedPrice = new RecordedPrice(), whatsappJob = new WhatsappJob()) {
         this.scraper = scraper;
         this.recordedPrice = recordedPrice;
+        this.whatsappJob = whatsappJob;
         this.run = this.run.bind(this);
     }
 
@@ -38,13 +40,14 @@ class ScrapeGoldPriceJob {
                 }
                 
                 await this.recordedPrice.setGoldRate(rate, eventId);
+                await this.whatsappJob.run({ rate, weight });
 
                 logger.info('SUCCESS COMPLETING JOB, EVENT GENERATED!');
             } else {   
                 logger.info("SUCCESS COMPLETING JOB, NO EVENT GENERATED!");
             }
         } catch (err) {
-            logger.error(wrapError('ERROR SENDING NOTIFICATION:', err));
+            logger.error(wrapError('ERROR RUNNING GOLD RATE JOB:', err));
         }
 
     }

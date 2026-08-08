@@ -1,13 +1,13 @@
-# AurumPulse: Gold Price Scraper & Kafka Producer ⛏️📈
+# AurumPulse: Gold Price Scraper & WhatsApp Notifier ⛏️📈
 
-A lightweight Node.js cron job that scrapes gold prices periodically, stores changes in a SQLite database, and produces Kafka events when price thresholds are crossed. Perfect for automated monitoring and real-time alerting systems.
+A lightweight Node.js cron job that scrapes gold prices periodically, stores changes in a SQLite database, and sends WhatsApp alerts when price thresholds are crossed. Perfect for automated monitoring and real-time alerting.
 
 ## Features
 
 - ✨ Scrapes live gold prices from an API or website  
 - 💾 Stores price history in a SQLite database  
-- 🚀 Produces Kafka events when price crosses configurable thresholds  
-- ⚙️ Configurable via `.env` variables (API, thresholds, Kafka brokers, topic)  
+- 📱 Sends WhatsApp notifications when price crosses configurable thresholds  
+- ⚙️ Configurable via `.env` variables (thresholds, Twilio API keys)  
 - 🔄 Automated scheduling with cron for periodic scraping  
 
 ## Getting Started
@@ -15,7 +15,7 @@ A lightweight Node.js cron job that scrapes gold prices periodically, stores cha
 ### Prerequisites
 
 - Node.js v18+  
-- Kafka cluster access  
+- Twilio account with WhatsApp sandbox or business API configured  
 - SQLite3 installed (or included via npm)  
 
 ## Table of Contents
@@ -44,11 +44,14 @@ yarn dev   # or npm run dev
 1. Create a `.env` file in the root directory with the following variables:
 
     ```env
-    # Kafka Configuration (Event Production)
-    KAFKA_BROKER_URL=HOST:PORT
-
     # Price Alert Configuration
     THRESHOLD=5000
+
+    # Twilio Configuration (WhatsApp Notifications)
+    TWILIO_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    TWILIO_AUTH_TOKEN=your_twilio_auth_token
+    TWILIO_FROM_NUMBER=+15551234567
+    TWILIO_TEMPLATE_SID=HXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     ```
 
 2. For production, if you want data persistence, you will need a named volume. See the `docker-compose.yml` for reference.
@@ -59,7 +62,7 @@ yarn dev   # or npm run dev
     cd data
     touch db.sqlite
     ```
-    Finally, navigate to config/sqlite.js and update `dbPath` from `/data` to `./data`.
+    Finally, navigate to config/db.js and update `dbFolder` from `/data` to `./data`.
 
 ## Project Structure
 
@@ -69,16 +72,17 @@ yarn dev   # or npm run dev
 ├── index.js           # Cron setup
 ├── config/
 │   ├── db.js          # SQLite database configuration
-│   ├── producer.js    # Kafka producer configuration
+│   ├── twilio.js      # Twilio client configuration
 │   └── logger.js      # Winston logger configuration
 ├── services/          # Modules handling gold price retrieval and processing
-│   ├── jobs.js        # Instances of jobs responsible for sending notifications
+│   ├── jobs.js        # Instances of jobs responsible for scraping and notifying
 │   ├── trackers.js    # Instances of in-memory tracking states
 │   └── scrapers.js    # Web scraping functions for different websites
 ├── entities/
 │   ├── RecordedPrice.js         # Implementation for state for previously recorded gold price
 │   ├── ScrapeGoldPriceJob.js    # Implementation for scraping gold prices and generating events
-│   └── Event.js                 # Implementation for Event creation and generation to Kafka broker / cluster
+│   ├── WhatsappJob.js           # Implementation for sending WhatsApp notifications
+│   └── Event.js                   # Implementation for Event creation and persistence
 ├── utils.js              # Shared utility functions (e.g. wrapError for structured error logging)
 ├── .env.example       # Example environment variables
 ├── .gitignore
@@ -94,7 +98,10 @@ yarn dev   # or npm run dev
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
 | `THRESHOLD` | Price change threshold for alerts | No | `5000` |
-| `KAFKA_BROKER_URL` | Kafka broker url for event production | Yes | - |
+| `TWILIO_SID` | Twilio account SID | Yes | - |
+| `TWILIO_AUTH_TOKEN` | Twilio auth token | Yes | - |
+| `TWILIO_FROM_NUMBER` | Twilio WhatsApp sender number | Yes | - |
+| `TWILIO_TEMPLATE_SID` | Optional Twilio content template SID | No | - |
 
 ## Cron Schedules
 
@@ -126,7 +133,7 @@ Schedules based on priority:
 ### Common Issues
 
 **Database setup:**
-- Navigate to config/sqlite.js and update `dbPath` from `/data` to `./data` for local development and testing
+- Navigate to config/db.js and update `dbFolder` from `/data` to `./data` for local development and testing
 
 ## Contributing
 
