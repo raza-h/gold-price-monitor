@@ -5,9 +5,9 @@ import { getUniqueStrings, wrapError } from '../utils.js';
 class WhatsappJob {
     async run(data) {
         try {
-            const { rate, weight } = data ?? {};
+            const { rate, weight, message } = data ?? {};
 
-            const notification = `Gold rate is Rs. ${rate?.toLocaleString()} per ${weight}`;
+            const notification = message || `Gold rate is Rs. ${rate?.toLocaleString()} per ${weight}`;
             const messages = await twilioClient.messages.list({ to: FROM_NUMBER });
             const recipients = getUniqueStrings(messages.map((message) => message?.from));
 

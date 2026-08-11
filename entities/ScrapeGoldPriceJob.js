@@ -2,7 +2,7 @@ import RecordedPrice from './RecordedPrice.js';
 import WhatsappJob from './WhatsappJob.js';
 import { logger } from '../config/index.js';
 import { THRESHOLD } from '../constants.js';
-import { wrapError } from '../utils.js';
+import { wrapError, calculatePriceAnalytics, formatGoldAlertMessage } from '../utils.js';
 import Event from './Event.js';
 
 class ScrapeGoldPriceJob {
@@ -38,9 +38,28 @@ class ScrapeGoldPriceJob {
                 if (!eventId) {
                     return;
                 }
-                
+
                 await this.recordedPrice.setGoldRate(rate, eventId);
-                await this.whatsappJob.run({ rate, weight });
+
+                let notificationPayload = { rate, weight };
+
+                // Analytics only when a real threshold move occurs (previous price exists).
+                if (previousGoldRate) {
+                    const recentPrices = await this.recordedPrice.getRecentGoldRates(5);
+                    const analytics = calculatePriceAnalytics(rate, previousGoldRate, recentPrices);
+                    const message = formatGoldAlertMessage(analytics);
+
+                    notificationPayload = {
+                        rate,
+                        weight,
+                        ...analytics,
+                        message,
+                    };
+
+                    await event.updatePayload(notificationPayload);
+                }
+
+                await this.whatsappJob.run(notificationPayload);
 
                 logger.info('SUCCESS COMPLETING JOB, EVENT GENERATED!');
             } else {   

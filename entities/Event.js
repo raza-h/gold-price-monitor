@@ -21,6 +21,14 @@ class Event {
             return null;
         }
     }
+
+    async updatePayload(payload) {
+        this.payload = payload;
+        await db.runAsync(
+            'UPDATE events SET payload = ? WHERE id = ?',
+            [JSON.stringify(this.payload), this.id]
+        );
+    }
 }
 
 export default Event;

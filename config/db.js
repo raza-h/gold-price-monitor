@@ -35,6 +35,18 @@ sqlite3.Database.prototype.getAsync = function(...args) {
   });
 };
 
+sqlite3.Database.prototype.allAsync = function(...args) {
+  return new Promise((resolve, reject) => {
+    this.all(...args, function (err, rows) {
+      if (err) {
+        logger.error('ERROR GETTING ROWS:', err);
+        return reject(err);
+      }
+      return resolve(rows ?? []);
+    });
+  });
+};
+
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) logger.error("ERROR CONNECTING TO DB:", err);
   else logger.info("CONNECTED TO DB!");
